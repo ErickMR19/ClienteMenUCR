@@ -9,6 +9,7 @@
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
     <link rel="stylesheet" href="bower_components/sidebar-v2/css/gmaps-sidebar.css" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <style>
         body {
@@ -49,6 +50,12 @@
             background-color: #41ade7;
         }
 
+        #mensaje-recaptcha div{
+          margin: 0 auto;
+        }
+        
+        #form-enviar{
+          padding-top: 15px;
         }
     </style>
 </head>
@@ -94,6 +101,21 @@
                     <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
                 </h1>
                 <div>
+                    <form id="form-enviar" onsubmit="return false;" class="form">
+                            
+                        <div class="form-group">
+                            <input type="text" id="mensaje-nombre" class="form-control" placeholder="Ingrese su nombre" required="required"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="mensaje-email" class="form-control" placeholder="Ingrese su correo electrónico" required="required"/>
+                        </div> 
+                        <div class="form-group">  
+                            <textarea id="mensaje-cuerpo" class="form-control" placeholder="Escriba su mensaje" required="required"></textarea>
+                        </div>
+                        <div id="mensaje-recaptcha" class="form-group g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI">
+                        </div>
+                        <button type="submit" class="btn btn-default" style="display:block; margin: 0 auto;">Enviar</button>
+                    </form>
                 </div>
             </div>
 
