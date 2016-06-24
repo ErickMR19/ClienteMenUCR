@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MenUCR</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta charset="utf8" />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
+    <link rel="stylesheet" href="bower_components/sidebar-v2/css/gmaps-sidebar.css" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        
+        html,
+        body,
+        #map {
+            height: 100%;
+            font: 10pt "Helvetica Neue", Arial, Helvetica, sans-serif;
+        }
+    </style>
+    <style>
+        .wrapper-list div {
+            border: 2px solid black;
+            width: 47%;
+            height: 100px;
+            float: left;
+            margin-top: 10px;
+            text-align: center;
+            padding-top: 20px;
+            font-size: 1.3em;
+        }
+        
+        .wrapper-list div:nth-child(even) {
+            margin-left: 10px;
+        }
+        
+        .wrapper-list div:hover {
+            background-color: #DDD;
+        }
+        
+        .sidebar-header,
+        .sidebar-tabs > ul > li.active {
+            color: #FFF;
+            background-color: #41ade7;
+        }
+
+        #mensaje-recaptcha div{
+          margin: 0 auto;
+        }
+        
+        #form-enviar{
+          padding-top: 15px;
+        }
+    </style>
+</head>
+
+<body onload="initialize()">
+    <div id="sidebar" class="sidebar collapsed">
+        <!-- Nav tabs -->
+        <div class="sidebar-tabs">
+            <ul role="tablist" id="opciones-soda">
+                <li class="disabled"><a id="botonInfo" href="#informacion-soda" role="tab" title="Información de la Soda"><i class="fa fa-cutlery"></i></a></li>
+                <li class="disabled"><a href="#menu-soda" role="tab" title="Menú de la Soda"><i class="fa fa-file-text"></i></a></li>
+                <li class="disabled"><a href="#mensaje-soda" role="tab" title="Mensaje a la Soda"><i class="fa fa-envelope"></i></a></li>
+            </ul>
+
+            <ul role="tablist">
+                <li><a href="#lista-sodas" role="tab" title="Lista de Sodas"><i class="fa fa-list"></i></a></li>
+                <li><a href="#ajustes" role="tab" title="Ajustes"><i class="fa fa-gear"></i></a></li>
+            </ul>
+        </div>
+
+        <!-- Tab panes -->
+        <div class="sidebar-content">
+
+            <div class="sidebar-pane" id="informacion-soda">
+                <h1 class="sidebar-header">
+                    <span class="nombre-soda-actual"></span>
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+                <div></div>
+            </div>
+
+            <div class="sidebar-pane" id="menu-soda">
+                <h1 class="sidebar-header">					
+                    <span class="nombre-soda-actual"></span>
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+                <div></div>
+            </div>
+
+            <div class="sidebar-pane" id="mensaje-soda">
+                <h1 class="sidebar-header">
+                    <span class="nombre-soda-actual"></span>
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+                <div>
+                    <form id="form-enviar" onsubmit="return false;" class="form">
+                            
+                        <div class="form-group">
+                            <input type="text" id="mensaje-nombre" class="form-control" placeholder="Ingrese su nombre" required="required"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="mensaje-email" class="form-control" placeholder="Ingrese su correo electrónico" required="required"/>
+                        </div> 
+                        <div class="form-group">  
+                            <textarea id="mensaje-cuerpo" class="form-control" placeholder="Escriba su mensaje" required="required"></textarea>
+                        </div>
+                        <div id="mensaje-recaptcha" class="form-group g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI">
+                        </div>
+                        <button type="submit" class="btn btn-default" style="display:block; margin: 0 auto;">Enviar</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="sidebar-pane" id="lista-sodas">
+                <h1 class="sidebar-header">Sodas<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+                <div></div>
+            </div>
+
+            <div class="sidebar-pane" id="ajustes">
+                <h1 class="sidebar-header">Ajustes<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+
+                <p>Sede actual: <span id="nombre-sede"> </span>
+                    <br>
+                    <button type="button" class="btn btn-default">Cambiar</button>
+                </p>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div id="map" class="sidebar-map"></div>
+
+    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="//maps.googleapis.com/maps/api/js" type="text/javascript"></script>
+    <script src="bower_components/sidebar-v2/js/jquery-sidebar.js"></script>
+
+    <script>
+        var sidebar = $('#sidebar').sidebar();
+        var map;
+        var sodas_listado = [];
+        sodas_listado[0] = {
+            'lat': 9.93805669987208,
+            'lng': -84.0516772629127,
+            'name': 'Soda de Odontología',
+            'id': 0
+        };
+        sodas_listado[1] = {
+            'lat': 9.93643188906427,
+            'lng': -84.0539088608131,
+            'name': 'Soda de Derecho',
+            'id': 1
+        };
+        var sodas = [];
+        sodas[0] = {
+            'name': 'Soda de Odontología',
+            'menu': [{
+                'tipo': 'Especial',
+                'nombre': 'Casado con chuleta',
+                'precio': 2500
+}, {
+                'tipo': 'Basico',
+                'nombre': 'Arroz con atun',
+                'precio': 2000
+}, {
+                'tipo': 'Vegetariano',
+                'nombre': 'Ensalada de repollo',
+                'precio': 2000
+}],
+            'info': {
+                'tarjeta': true,
+                'Horario': '7am a 7pm'
+            }
+        };
+        sodas[1] = {
+            'name': 'Soda de Derecho',
+            'menu': [{
+                'tipo': 'Especial',
+                'nombre': 'Casado con pescado',
+                'precio': 2300
+}, {
+                'tipo': 'Basico',
+                'nombre': 'Arroz con pollo',
+                'precio': 1900
+}, {
+                'tipo': 'Vegetariano',
+                'nombre': 'Ensalada de lechuga',
+                'precio': 1750
+}],
+            'info': {
+                'tarjeta': false,
+                'Horario': '6am a 8pm'
+            }
+        };
+
+        function cambiarInfo(id) {
+            var sodaEscogida = sodas[id];
+            $('#opciones-soda li').each(function () {
+                $(this).removeClass('disabled')
+            });
+            $('.nombre-soda-actual').each(function () {
+                $(this).text(sodaEscogida.name)
+            });
+            var textoInfo;
+            if (sodaEscogida.info.tarjeta) {
+                textoInfo = "<p>Se acepta tarjeta de crédito o débito</p>";
+            } else {
+                textoInfo = "<p>No se acepta tarjeta de crédito o débito</p>";
+            }
+            textoInfo += "El horario es: " + sodaEscogida.info.Horario;
+            $('#informacion-soda > div').html(textoInfo);
+
+            menuInfo = "<table class='table'><theader><th>Tipo</th><th>Nombre</th><th>Precio</th></theader><tbody>";
+            $(sodaEscogida.menu).each(
+                function () {
+                    menuInfo += "<tr><td>" + this.tipo + "</td><td>" + this.nombre + "</td><td> ₡" + this.precio + "</td></tr>"
+                }
+            );
+            menuInfo += "</tbody></table>";
+            $('#menu-soda > div').html(menuInfo);
+        }
+
+        function insertaTodo(mapa, infoWindow) {
+            var listaSodasHTML = "<div class='wrapper-list'>";
+            $(sodas_listado).each(function () {
+                listaSodasHTML += "<div onclick=\"cambiarInfo(" + this.id + ");sidebar.open('informacion-soda');\">" + this.name + "</div>";
+                var html, point, marker, label;
+                html = "<b>" + this.name + "</b> <br/>" + "<a href=\"javascript:sidebar.open('informacion-soda')\">Ver mas info</a>";
+                point = new google.maps.LatLng(this.lat, this.lng);
+
+
+                marker = new google.maps.Marker({
+                    map: mapa,
+                    position: point,
+                    title: this.name
+                });
+                var nId = this.id;
+                google.maps.event.addListener(marker, 'click', function () { //Le decimos a google que cuando alguien haga clic sobre 
+                    infoWindow.setContent(html);
+                    infoWindow.open(mapa, marker);
+                    cambiarInfo(nId);
+                });
+            });
+            listaSodasHTML += "</div>";
+            $('#lista-sodas > div').html(listaSodasHTML);
+        }
+
+        function initialize() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: new google.maps.LatLng(9.936336777937717, -84.05115959657292),
+                zoom: 17,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                disableDefaultUI: true
+            });
+            var infoWindow = new google.maps.InfoWindow();
+            insertaTodo(map, infoWindow);
+        }
+    </script>
+</body>
+
+</html>
