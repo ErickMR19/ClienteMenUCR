@@ -177,30 +177,44 @@
             'lat': 9.93805669987208,
             'lng': -84.0516772629127,
             'name': 'Soda de Odontología',
-            'id': 0
+            'id': 0,
+            'urlimagen': 'img/odonto.jpg'
         };
         sodas_listado[1] = {
             'lat': 9.93643188906427,
             'lng': -84.0539088608131,
             'name': 'Soda de Derecho',
-            'id': 1
+            'id': 1,
+            'urlimagen': 'img/derecho.jpg'
+        };
+        sodas_listado[2] = {
+            'lat': 9.9361914692185,
+            'lng': -84.0488850833282,
+            'name': 'Soda de Educacion',
+            'id': 2,
+            'urlimagen': 'img/eduacion.jpg'
         };
         var sodas = [];
         sodas[0] = {
             'name': 'Soda de Odontología',
-            'menu': [{
-                'tipo': 'Especial',
-                'nombre': 'Casado con chuleta',
-                'precio': 2500
-}, {
-                'tipo': 'Basico',
-                'nombre': 'Arroz con atun',
-                'precio': 2000
-}, {
-                'tipo': 'Vegetariano',
-                'nombre': 'Ensalada de repollo',
-                'precio': 2000
-}],
+            'menu': 
+                    [
+                        {
+                            'tipo': 'Especial',
+                            'nombre': 'Casado con chuleta',
+                            'precio': 2500
+                        },
+                        {
+                            'tipo': 'Basico',
+                            'nombre': 'Arroz con atun',
+                            'precio': 2000
+                        }, 
+                        {
+                            'tipo': 'Vegetariano',
+                            'nombre': 'Ensalada de repollo',
+                            'precio': 2000
+                        }
+                    ],
             'info': {
                 'tarjeta': true,
                 'Horario': '7am a 7pm'
@@ -208,19 +222,50 @@
         };
         sodas[1] = {
             'name': 'Soda de Derecho',
-            'menu': [{
-                'tipo': 'Especial',
-                'nombre': 'Casado con pescado',
-                'precio': 2300
-}, {
-                'tipo': 'Basico',
-                'nombre': 'Arroz con pollo',
-                'precio': 1900
-}, {
-                'tipo': 'Vegetariano',
-                'nombre': 'Ensalada de lechuga',
-                'precio': 1750
-}],
+            'menu': 
+                    [
+                        {
+                            'tipo': 'Especial',
+                            'nombre': 'Casado con pescado',
+                            'precio': 2300
+                        },
+                        {
+                            'tipo': 'Basico',
+                            'nombre': 'Arroz con pollo',
+                            'precio': 1900
+                        },
+                        {
+                            'tipo': 'Vegetariano',
+                            'nombre': 'Ensalada de lechuga',
+                            'precio': 1750
+                        }
+                    ],
+            'info': {
+                'tarjeta': false,
+                'Horario': '6am a 8pm'
+            }
+        };
+        
+        sodas[2] = {
+            'name': 'Soda de Educación',
+            'menu': 
+                    [
+                        {
+                            'tipo': 'Basico A',
+                            'nombre': 'Casado con carne',
+                            'precio': 2450
+                        },
+                        {
+                            'tipo': 'Basico B',
+                            'nombre': 'Fajas con pollo',
+                            'precio': 1950
+                        },
+                        {
+                            'tipo': 'Vegetariano',
+                            'nombre': 'Casado con carne de soya',
+                            'precio': 1800
+                        }
+                    ],
             'info': {
                 'tarjeta': false,
                 'Horario': '6am a 8pm'
