@@ -332,6 +332,16 @@
                 disableDefaultUI: true
             });
             var infoWindow = new google.maps.InfoWindow();
+            google.maps.event.addListener(infoWindow, 'closeclick', function(){
+                sidebar.close();
+                $('#opciones-soda li').each(function () {
+                    $(this).addClass('disabled');
+                });
+            });
+            google.maps.event.addListener(map, 'click', function(event){
+                infoWindow.close();
+                google.maps.event.trigger(infoWindow, 'closeclick');
+            });
             insertaTodo(map, infoWindow);
         }
     </script>
