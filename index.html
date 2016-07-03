@@ -25,23 +25,59 @@
         }
     </style>
     <style>
-        .wrapper-list div {
-            border: 2px solid black;
-            width: 47%;
-            height: 100px;
+        .wrapper-list > div {
             float: left;
-            margin-top: 10px;
             text-align: center;
-            padding-top: 20px;
             font-size: 1.3em;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            height: 125px;
         }
         
-        .wrapper-list div:nth-child(even) {
-            margin-left: 10px;
+        @media (max-width: 459px) {
+            .wrapper-list > div {
+                width: 98%;
+            }
         }
         
-        .wrapper-list div:hover {
-            background-color: #DDD;
+        @media (min-width: 460px) and (max-width: 767px) {
+            .wrapper-list > div {
+                width: 48%;
+            }
+            .wrapper-list > div:nth-child(even) {
+                margin-left: 10px;
+            }
+        }
+        
+        @media (min-width: 768px) and (max-width: 1199px) {
+            .wrapper-list > div {
+                width: 98%;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .wrapper-list > div {
+                width: 48%;
+            }
+            .wrapper-list > div:nth-child(even) {
+                margin-left: 10px;
+            }
+        }
+        
+        .thumbnail > .content-t {
+            background-color: #F0F0F0;
+            height: 100%;
+            padding: 3px;
+            padding-top: 6px;
+            padding-bottom: 15px;
+        }
+        
+        .wrapper-list div.thumbnail:hover {
+            border-color: #41ade7;
+        }
+        
+        .wrapper-list div:hover > .content-t {
+            background-color: #E0E0E0;
         }
         
         .sidebar-header,
@@ -56,6 +92,29 @@
         
         #form-enviar {
             padding-top: 15px;
+        }
+        
+        div.contenedor-nombre {
+            height: 70px;
+            position: relative;
+            text-align: center;
+        }
+        
+        div.contenedor-nombre p {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            transform: translate(0, -50%);
+            text-align: center;
+            width: 100%;
+        }
+        
+        #lista-sodas {
+            padding-left: 10px;
+        }
+        
+        #lista-sodas .sidebar-header {
+            padding-left: 40px;
         }
     </style>
 </head>
@@ -298,11 +357,14 @@
             menuInfo += "</tbody></table>";
             $('#menu-soda > div').html(menuInfo);
         }
-
+        var marcadores = [];
+        function clickMarcador(id, cerrar){
+            if(cerrar) sidebar.close();
+            google.maps.event.trigger(marcadores[id], 'click');
+        }
         function insertaTodo(mapa, infoWindow) {
             var listaSodasHTML = "<div class='wrapper-list'>";
             $(sodas_listado).each(function () {
-                listaSodasHTML += "<div onclick=\"cambiarInfo(" + this.id + ");sidebar.open('informacion-soda');\">" + this.name + "</div>";
                 var html, point, marker, label;
                 html = "<b>" + this.name + "</b> <br/>" + "<a href=\"javascript:sidebar.open('informacion-soda')\">Ver mas info</a>";
                 point = new google.maps.LatLng(this.lat, this.lng);
@@ -314,11 +376,29 @@
                     title: this.name
                 });
                 var nId = this.id;
-                google.maps.event.addListener(marker, 'click', function () { //Le decimos a google que cuando alguien haga clic sobre 
+                marcadores[nId] = marker;
+                google.maps.event.addListener(marker, 'click', function () {
                     infoWindow.setContent(html);
                     infoWindow.open(mapa, marker);
+                    mapa.panTo(point);
                     cambiarInfo(nId);
                 });
+                listaSodasHTML += "<div class='thumbnail'><div class='content-t'><div class='contenedor-nombre'><p>" 
+                    + this.name 
+                    + `</p></div>
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-info" onclick='clickMarcador(`+nId+`, true)'>Ver en el mapa</button>
+                          <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li><a href="#" onclick="clickMarcador(` + this.id + `, false);sidebar.open('informacion-soda');">Ver Información</a></li>
+                            <li><a href="#" onclick="clickMarcador(` + this.id + `, false);sidebar.open('menu-soda');">Ver menú del día</a></li>
+                            <li><a href="#" onclick="clickMarcador(` + this.id + `, false);sidebar.open('mensaje-soda');">Enviar mensaje</a></li>
+                          </ul>
+                        </div>`
+                    + "</div></div>";
             });
             listaSodasHTML += "</div>";
             $('#lista-sodas > div').html(listaSodasHTML);
