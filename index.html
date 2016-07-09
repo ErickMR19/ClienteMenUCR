@@ -211,10 +211,59 @@
             <div class="sidebar-pane" id="ajustes">
                 <h1 class="sidebar-header">Ajustes<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
 
-                <p>Sede actual: <span id="nombre-sede"> </span>
+                <div><h4>Sede actual:</h4><span id="nombre-sede"> </span>
                     <br>
-                    <button type="button" class="btn btn-default">Cambiar</button>
-                </p>
+                    <script>
+                    //Se pide el json con las sedes disponibles
+                    var json = {
+                      "headquarters": [
+                        {
+                          "id": 1,
+                          "name": "Sede Rodrigo Facio",
+                          "x": 9.9361835432865,
+                          "y": -84.049561
+                        },
+                        {
+                          "id": 2,
+                          "name": "Sede Andrey Perez",
+                          "x": 9.8417351128531,
+                          "y": -83.863480067383
+                        }
+                      ]
+                    };
+                    function cambiar_sede(id, lat, long)
+                    {
+                        var point = new google.maps.LatLng(lat, long);
+                        map.setCenter(point);
+                    }
+                    function cancelar()
+                    {
+                        //Vuelve a ser seleccionable la opcion de cambiar
+                        document.getElementById('cambia_sedeBTN').disabled = false;
+                        document.getElementById('div_sedes').innerHTML = "<br>";
+                        
+                        
+                    }
+                    var div_opciones_sodas = document.createElement('div');
+                    div_opciones_sodas.id = "div_sedes";
+                    div_opciones_sodas.innerHTML = "<br>";
+                    function presentar_sedes()
+                    {
+                        //Se recorre el json para obtener sus valores
+                        for(var i = 0; i < json.headquarters.length; i++)
+                        {
+                            var boton = '<div><button class="btn btn-info btn-md" onclick="cambiar_sede('+ json.headquarters[i].id + ',' + json.headquarters[i].x + ',' + json.headquarters[i].y +');">'+ json.headquarters[i].name +'</button></div><br>';
+                            div_opciones_sodas.innerHTML += boton;
+                            document.getElementById('cambia_sedeBTN').disabled = true;
+                        }
+                        //Se agrega el boton de cancelar
+                            var boton = '<button class="btn btn-default" onclick="cancelar();">Cancelar</button>';
+                            div_opciones_sodas.innerHTML += boton;
+                            document.getElementById('ajustes').appendChild(div_opciones_sodas);
+                    }
+                    </script>
+                    <button type="button" id="cambia_sedeBTN" class="btn btn-default" onclick="presentar_sedes();">Cambiar</button>
+                </div>
 
 
             </div>
@@ -403,7 +452,7 @@
             listaSodasHTML += "</div>";
             $('#lista-sodas > div').html(listaSodasHTML);
         }
-
+        
         function initialize() {
             map = new google.maps.Map(document.getElementById("map"), {
                 center: new google.maps.LatLng(9.936336777937717, -84.05115959657292),
@@ -424,8 +473,10 @@
                 google.maps.event.trigger(infoWindow, 'closeclick');
             });
             insertaTodo(map, infoWindow);
+            
         }
     </script>
+    
 </body>
 
 </html>
