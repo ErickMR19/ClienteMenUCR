@@ -5,7 +5,6 @@
 /*global grecaptcha*/
 
 var URL_Peticiones = "https://menucr-jeancarlozuniga17.c9users.io/src";
-var URL_Peticiones = "http://127.0.0.1";
 var captchaIncompleto = true;
 var sidebar = $('#sidebar').sidebar();
 var map;
@@ -35,7 +34,6 @@ function enviarPeticion(idSoda, form) {
         },
         url: URL_Peticiones + "/restaurants/sendEmail/" + idSoda
     }).done(function (json) {
-        console.log(json);
         if (json.code && json.code === 404) {
             $('#mensajes-alertas').html('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Soda no existente</div>');
         } else if (json.respuesta.Exito) {
